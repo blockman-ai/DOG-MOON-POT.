@@ -24,8 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const checkDogToken = async (publicKey) => {
   try {
-    const url = 'https://rpc.helius.xyz/'; // <--- CORRECT RPC now
-    const response = await fetch(url, {
+    const response = await fetch(SOLANA_RPC_URL, {  // <--- use the constant
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
