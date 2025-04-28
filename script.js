@@ -23,41 +23,42 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPot();
 
   const checkDogToken = async (publicKey) => {
-    try {
-      const response = await fetch(SOLANA_RPC_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'getTokenAccountsByOwner',
-          params: [
-            publicKey,
-            { programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' },
-            { encoding: 'jsonParsed' }
-          ]
-        })
-      });
+  try {
+    const url = 'https://rpc.helius.xyz/'; // <--- CORRECT RPC now
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'getTokenAccountsByOwner',
+        params: [
+          publicKey,
+          { programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' },
+          { encoding: 'jsonParsed' }
+        ]
+      })
+    });
 
-      const data = await response.json();
-      const tokens = data.result?.value || [];
+    const data = await response.json();
+    const tokens = data.result?.value || [];
 
-      const holdsDOG = tokens.some(token => {
-        const info = token.account.data.parsed.info;
-        console.log('TOKEN INFO:', info); // Debugging
-        return (
-          info.mint === DOG_TOKEN_MINT &&
-          info.tokenAmount &&
-          Number(info.tokenAmount.amount) > 0
-        );
-      });
+    const holdsDOG = tokens.some(token => {
+      const info = token.account.data.parsed.info;
+      console.log('TOKEN INFO:', info);
+      return (
+        info.mint === DOG_TOKEN_MINT &&
+        info.tokenAmount &&
+        Number(info.tokenAmount.amount) > 0
+      );
+    });
 
-      return holdsDOG;
-    } catch (error) {
-      console.error('Error checking DOG token:', error);
-      return false;
-    }
-  };
+    return holdsDOG;
+  } catch (error) {
+    console.error('Error checking DOG token:', error);
+    return false;
+  }
+};
 
   const handleWalletConnected = async (walletAddress) => {
     connectedWallet = walletAddress;
